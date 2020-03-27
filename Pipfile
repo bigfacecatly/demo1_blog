@@ -8,6 +8,8 @@ verify_ssl = true
 [packages]
 flask = "*"
 flask-chedior = "*"
+datetime = "*"
+click = "*"
 
 [requires]
 python_version = "2.7"
