@@ -30,6 +30,12 @@
 	{% endblock nav %}
 
 	<main class="container">
+		{% for message in get_flashed_messages(with_categories=True) %}
+		<div class="alert alert-{{ message[0] }}" role='alert'>
+			<button class="close" type='button' data-dismiss='alert'>&times;</button>
+			{{ message[1] }}
+		</div>
+		{% endfor %}
 		{% block content %}{% endblock content %}
 		{% block footer %}
 		<footer></footer>
@@ -42,4 +48,4 @@
 	<script type="text/javascript" src="{{ url_for('static',filename='js/script.js') }}"></script>
 	{{ moment.include_moment(local_js=url_for('static',filename='js/moment-with-locales.min.js'))}}
 </body>
-</html>
+</html> 
