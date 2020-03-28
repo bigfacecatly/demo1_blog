@@ -2,6 +2,7 @@
 from flask import Flask
 from bluelog.settings import config
 from bluelog.extensions import bootstrap,db,moment,cheditor,mail
+from bluelog.models import Admin,Category
 
 
 def create_app(config_name=None):
@@ -48,6 +49,36 @@ def register_errors(app):
 
 def reigster_commands(app):
 	pass
+
+
+def register_template_context(app):
+	@app.content_processor
+	def make_template_context():
+		admin = Admin.query.first()
+		categories = Category.query.order_by(Category.name).all()
+		return dict(admin=admin,categories=categories)
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
