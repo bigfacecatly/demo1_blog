@@ -1,0 +1,39 @@
+
+
+from flask import render_template,Blueprint,request
+
+blog_hp = Blueprint('blog',__name__)
+
+@blog_hp.route('/')
+def index():
+	page = request.args.get('page',1,type=int)
+	per_page = current_app.config['BLUELOG_POST_PER_PAGE']
+	pagination = Post.query.order_by(Post.timestamp.desc()).paginate(page,per_page=per_page)
+	posts = pagination.items
+	return render_template('blog/index.html',pagination=pagination,posts=posts)
+
+
+@blog_hp.route('/about')
+def about():
+	return render_template('blog/about.html')
+
+
+@blog_hp.route('/category/<int:category_id>')
+def show_category(category_id):
+	category = Category.query.get_or_404(category_id)
+	page = request.args.get('page',1,type=int)
+	per_page = current_app.config('BLUELOG_POST_PER_PAGE')
+	pageination = Post.query.with_parent(category).order_by(Post.timestamp.desc()).patinate(page,per_page)
+	posts = pagination.items 
+	return render_template('blog/category.html',category=category,pagination=pagination,posts=posts)
+
+@blog_hp.route('/post/<int:post_id>',methods=['GET',"POST"])
+def show_post(post_id):
+	post = Post.query.get_or_404(post_id)
+	page = request.args.get('page',1,type=int)
+	per_page = current_app.config['BLUELOG_POST_PER_PAGE']
+	pagination = Comment.query.with_parent(post).filter_by(reviewed=True).order_by(Comment.timestamp.asc()).patinate(page,per_page)
+	comments = pagination.items
+	return render_template('blog/post.html',post=post,pagination=pagination,comments=comments)
+
+

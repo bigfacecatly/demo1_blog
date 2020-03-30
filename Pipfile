@@ -7,9 +7,7 @@ verify_ssl = true
 
 [packages]
 flask = "*"
-flask-chedior = "*"
-datetime = "*"
-click = "*"
+unidecode = "*"
 
 [requires]
-python_version = "2.7"
+python_version = "3.7"

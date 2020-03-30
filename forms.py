@@ -1,7 +1,7 @@
 
 
 from flask_wtf import FlaskForm
-from wtforms import StringField,PasswordField,SubmitField,Booleanield,SelectField,ValidationError,TextAreaField
+from wtforms import StringField,PasswordField,SubmitField,Booleanield,SelectField,ValidationError,TextAreaField,HiddenField
 from wtforms.validators import DataRequired,Length,Email,URL,Optional
 from flask_ckeditor import CKEditorField
 
@@ -42,3 +42,23 @@ class CommentForm(FlaskForm):
 	email = StringField('Email',validators=[DataRequired(),Email(),Length(1,254)])
 	body = TextAreaField('Comment',validators=[DataRequired()])
 	submit = SubmitField()
+
+
+class AdminCommentForm(CommentForm):
+	author = HiddenField()
+	email = HiddenField()
+	site = HiddenField()
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
