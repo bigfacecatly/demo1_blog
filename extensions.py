@@ -6,8 +6,17 @@ from flask_mail import Mail
 from flask_ckeditor import CKEditor
 from flask_moment import Moment
 
+from bluelog.models import Admin
+
 bootstrap = Bootstrap()
 db = SQLAlchemy()
 moment = Moment()
 cheditor = CKEditor()
 mail = Mail()
+
+
+
+@login_manager.user_loader
+def load_user(user_id):
+	uer = Admin.query.get(int(user_id))
+	return user 

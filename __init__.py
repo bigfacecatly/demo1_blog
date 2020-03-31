@@ -1,5 +1,7 @@
 
 from flask import Flask
+from flask_wtf.csrf import CSRFError
+
 from bluelog.settings import config
 from bluelog.extensions import bootstrap,db,moment,cheditor,mail
 from bluelog.models import Admin,Category
@@ -48,7 +50,41 @@ def register_errors(app):
 
 
 def reigster_commands(app):
-	pass
+	
+
+	@app.cli.command()
+	@click.option('--username',prompt=True,help='The username used to login.')
+	@click.option('--password',prompt=True,hide_input=True,confirmation_prompt=True,help='The password used to login.')
+	def init(username,password):
+		""" Building Bluelog,just for you """
+		click.echo('Initializing the database')
+		db.create_all()
+
+		admin = Admin.query.first()
+		if admin:
+			click.echo('The administrator aleady exists,updating...')
+			admin.username = username
+			admin.set_password(password)
+		else:
+			click.echo('Creating the temporary administrator accunt...')
+			admin = Admin(
+				username = username,
+				blog_title = 'Bluelog',
+				blog_sub_title = "No,I'm the real thing.",
+				name = 'Admin',
+				about = 'Anything about you.'
+				)
+			admin.set_password(password)
+			db.session.add(admin)
+
+		category = Category.query.first()
+		if category is None:
+			click.echo('Creating the default category...')
+			category = Category(name='Default')
+			db.session.add(category)
+		db.session.commit()
+		click.echo('Done.')
+
 
 
 def register_template_context(app):
@@ -60,6 +96,9 @@ def register_template_context(app):
 	
 
 
+@app.errorhandler(CSRFError)
+def handle_csrf_error(e):
+	return render_template('errors/400.html',description=e.description),400
 
 
 
